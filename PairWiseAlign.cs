@@ -30,6 +30,9 @@ namespace GeneticsLab {
     /// <returns>the alignment score for sequenceA and sequenceB.  The calling function places the result in entry rowInTable,columnInTable
     /// of the ResultTable</returns>
     public int Align(GeneSequence sequenceA, GeneSequence sequenceB, ResultTable resultTableSoFar, int rowInTable, int columnInTable) {
+      // Check for equal alignment
+      if (rowInTable == columnInTable) return 0;
+      
       // Check Cache
       if (InCache(rowInTable, columnInTable)) return cache[rowInTable][columnInTable];
 
@@ -66,8 +69,6 @@ namespace GeneticsLab {
             int left = resultSet2[j - 1] + indel;
             int diag = resultSet1[j - 1] + sub;
             cost = GetSmallest(top, left, diag);
-          } else {
-            Console.WriteLine("Missed Something");
           }
           resultSet2.Add(cost);
         }
@@ -81,9 +82,7 @@ namespace GeneticsLab {
       AddToCache(rowInTable, columnInTable, result);
       AddToCache(columnInTable, rowInTable, result);
 
-      return result;
-      // a place holder computation. You'll want to implement your code here. 
-      //return (Math.Abs(sequenceA.Sequence.Length - sequenceB.Sequence.Length));       
+      return result;     
     }
 
     private void AddToCache(int row, int col, int cost) {
