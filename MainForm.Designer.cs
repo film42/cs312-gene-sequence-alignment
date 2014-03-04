@@ -54,6 +54,7 @@ namespace GeneticsLab
       this.dataGridViewResults.ReadOnly = true;
       this.dataGridViewResults.Size = new System.Drawing.Size(855, 411);
       this.dataGridViewResults.TabIndex = 0;
+      this.dataGridViewResults.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridViewResults_CellMouseClick);
       // 
       // statusStrip1
       // 

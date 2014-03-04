@@ -3,6 +3,97 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace GeneticsLab {
+
+  class GeneNode {
+    public GeneNode Prev;
+    public string X;
+    public string Y;
+    public int Cost;
+
+    public GeneNode(GeneNode prev, char x, char y, int cost) {
+      this.Prev = prev;
+      this.X = x.ToString();
+      this.Y = y.ToString();
+      this.Cost = cost;
+    }
+  }
+
+
+  class GeneSequenceAlign {
+
+    private int MaxCharactersToAlign = 100;
+
+    private int indel = 5;
+    private int sub = 1;
+    private int match = -3;
+
+    public GeneNode Align(GeneSequence sequenceA, GeneSequence sequenceB, ResultTable resultTableSoFar, int rowInTable, int columnInTable) {
+      // Check for equal alignment
+      if (rowInTable == columnInTable) return new GeneNode(null, '0', '0', 0);
+
+      // Linear space requirement
+      var resultSet1 = new List<GeneNode>(); // Prev Row
+      var resultSet2 = new List<GeneNode>(); // Current Row
+
+      // New Sequences
+      string seqA = "0" + sequenceA.Sequence;
+      string seqB = "0" + sequenceB.Sequence;
+
+      // Clean up the length to cap at 5000
+      int seqALength = seqA.Length;
+      int seqBLength = seqB.Length;
+      if (seqA.Length > MaxCharactersToAlign + 1) seqALength = MaxCharactersToAlign + 1;
+      if (seqB.Length > MaxCharactersToAlign + 1) seqBLength = MaxCharactersToAlign + 1;
+
+
+      // Core iteration
+      for (int i = 0; i < seqALength; i++) {
+        for (int j = 0; j < seqBLength; j++) {
+          GeneNode acc = null;
+          // Starting position
+          if (i == 0 && j == 0) acc = new GeneNode(null, '0', '0', 0);
+          // Edge cases
+          else if (i == 0 && j > 0)
+            acc = new GeneNode(resultSet2[j - 1], seqA[i], seqB[i], (resultSet2[j - 1].Cost + indel));
+          else if (i > 0 && j == 0)
+            acc = new GeneNode(resultSet1[j], seqA[i], seqB[i], (resultSet1[j].Cost + indel));
+
+          // Match Case
+          else if ((i > 0 && j > 0) && (seqA[i] == seqB[j])) {
+            // match or indel
+            var top = new GeneNode(resultSet1[j], seqA[i], seqB[i], (resultSet1[j].Cost + indel));
+            var left = new GeneNode(resultSet2[j - 1], seqA[i], seqB[i], (resultSet2[j - 1].Cost + indel));
+            var diag = new GeneNode(resultSet1[j - 1], seqA[i], seqB[i], (resultSet1[j - 1].Cost + match));
+            acc = GetSmallest(top, left, diag);
+          } 
+          // Sub Case
+          else if ((i > 0 && j > 0) && (seqA[i] != seqB[j])) {
+            // sub or indel
+            var top = new GeneNode(resultSet1[j], seqA[i], seqB[i], (resultSet1[j].Cost + indel));
+            var left = new GeneNode(resultSet2[j - 1], seqA[i], seqB[i], (resultSet2[j - 1].Cost + indel));
+            var diag = new GeneNode(resultSet1[j - 1], seqA[i], seqB[i], (resultSet1[j - 1].Cost + sub));
+            acc = GetSmallest(top, left, diag);
+          }
+          resultSet2.Add(acc);
+        }
+
+        resultSet1 = resultSet2;
+        resultSet2 = new List<GeneNode>();
+      }
+
+      return  resultSet1[resultSet1.Count - 1];
+    }
+
+    private GeneNode GetSmallest(GeneNode a, GeneNode b, GeneNode c) {
+      var smallest = a;
+      if (b.Cost < smallest.Cost) smallest = b;
+      if (c.Cost < smallest.Cost) smallest = c;
+      return smallest;
+    }
+
+  }
+
+
   class PairWiseAlign {
     
     /// <summary>
