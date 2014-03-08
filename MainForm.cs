@@ -68,8 +68,8 @@ namespace GeneticsLab
           string y = "";
 
           while (results.Prev != null) {
-            x += results.X;
-            y += results.Y;
+            x = results.X + x;
+            y = results.Y + y;
 
             results = results.Prev;
           }

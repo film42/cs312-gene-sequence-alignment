@@ -94,6 +94,7 @@ namespace GeneticsLab
       // 
       // upperResult
       // 
+      this.upperResult.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.upperResult.Location = new System.Drawing.Point(13, 445);
       this.upperResult.Name = "upperResult";
       this.upperResult.Size = new System.Drawing.Size(854, 20);
@@ -101,6 +102,7 @@ namespace GeneticsLab
       // 
       // lowerResult
       // 
+      this.lowerResult.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.lowerResult.Location = new System.Drawing.Point(13, 471);
       this.lowerResult.Name = "lowerResult";
       this.lowerResult.Size = new System.Drawing.Size(854, 20);
